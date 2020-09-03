@@ -4,6 +4,7 @@ import com.github.natezhengbne.toy_robot.BaseUnitTest;
 import com.github.natezhengbne.toy_robot.command.ICommand;
 import com.github.natezhengbne.toy_robot.constant.CommandType;
 import com.github.natezhengbne.toy_robot.constant.DirectionType;
+import com.github.natezhengbne.toy_robot.model.Command;
 import com.github.natezhengbne.toy_robot.model.Toy;
 import com.github.natezhengbne.toy_robot.service.TableService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,11 +38,11 @@ class MoveCommandTest extends BaseUnitTest {
     @Test
     void execute() {
         ICommand placeCommand = super.commandFactory.getCommand(CommandType.PLACE.toString());
-        Toy placedToy = placeCommand.execute("0,0,NORTH");
+        Toy placedToy = placeCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH")).build());
 
         assertNotNull(placedToy);
 
-        Toy toy = iCommand.execute("");
+        Toy toy = iCommand.execute(Command.builder().args(new ArrayList<>()).build());
 
         log.info(toy.toString());
 
@@ -55,12 +59,12 @@ class MoveCommandTest extends BaseUnitTest {
     @Test
     void fallingTest(){
         ICommand placeCommand = super.commandFactory.getCommand(CommandType.PLACE.toString());
-        Toy placedToy = placeCommand.execute("3,3,NORTH");
+        Toy placedToy = placeCommand.execute(Command.builder().args(Arrays.asList("3","3","NORTH")).build());
 
         assertNotNull(placedToy);
 
-        iCommand.execute("");
-        Toy toy = iCommand.execute("");
+        iCommand.execute(Command.builder().args(new ArrayList<>()).build());
+        Toy toy = iCommand.execute(Command.builder().args(new ArrayList<>()).build());
 
         log.info(toy.toString());
         assertEquals(DirectionType.NORTH, toy.getDirection());

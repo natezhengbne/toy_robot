@@ -3,6 +3,7 @@ package com.github.natezhengbne.toy_robot.command.impl;
 import com.github.natezhengbne.toy_robot.command.AbstractCommand;
 import com.github.natezhengbne.toy_robot.constant.CommandType;
 import com.github.natezhengbne.toy_robot.constant.DirectionType;
+import com.github.natezhengbne.toy_robot.model.Command;
 import com.github.natezhengbne.toy_robot.model.Position;
 import com.github.natezhengbne.toy_robot.model.Toy;
 import com.github.natezhengbne.toy_robot.service.IdGenerator;
@@ -24,24 +25,23 @@ public class PlaceCommand extends AbstractCommand {
 
     /**
      *
-     * @param parameter PLACE X,Y,F,(name)
+     * @param cmd PLACE X,Y,F,(name)
      * @return
      */
     @Override
-    public Toy execute(String parameter) {
-        String[] cmdArray = parameter.split(",");
+    public Toy execute(Command cmd) {
         Position position = Position.builder()
-                .horizontal(Integer.parseInt(cmdArray[0]))
-                .vertical(Integer.parseInt(cmdArray[1]))
+                .horizontal(Integer.parseInt(cmd.getArgs().get(0)))
+                .vertical(Integer.parseInt(cmd.getArgs().get(1)))
                 .build();
-        DirectionType direction = DirectionType.valueOf(cmdArray[2]);
-        String toyName = cmdArray.length>3?cmdArray[3]:IdGenerator.getId();
+        DirectionType direction = DirectionType.valueOf(cmd.getArgs().get(2));
+        String toyName = cmd.getArgs().size()>3?cmd.getArgs().get(3):IdGenerator.getId();
 
         Toy toy = Toy.builder()
                 .name(toyName)
                 .position(position)
                 .direction(direction)
-                .nextPosition(next(position, direction))
+                .nextPosition(tableService.nextPosition(position, direction))
                 .build();
 
         if(!tableService.isValidPosition(toy.getPosition())){

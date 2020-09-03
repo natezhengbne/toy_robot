@@ -4,12 +4,16 @@ import com.github.natezhengbne.toy_robot.BaseUnitTest;
 import com.github.natezhengbne.toy_robot.command.ICommand;
 import com.github.natezhengbne.toy_robot.constant.CommandType;
 import com.github.natezhengbne.toy_robot.constant.DirectionType;
+import com.github.natezhengbne.toy_robot.model.Command;
 import com.github.natezhengbne.toy_robot.model.Toy;
 import com.github.natezhengbne.toy_robot.service.TableService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,10 +37,10 @@ class LeftCommandTest extends BaseUnitTest {
     @Test
     void execute() {
         ICommand placeCommand = super.commandFactory.getCommand(CommandType.PLACE.toString());
-        Toy placedToy = placeCommand.execute("1,1,NORTH");
+        Toy placedToy = placeCommand.execute(Command.builder().args(Arrays.asList("1","1","NORTH")).build());
         assertNotNull(placedToy);
 
-        Toy toy = iCommand.execute("");
+        Toy toy = iCommand.execute(Command.builder().args(new ArrayList<>()).build());
 
         log.info(toy.toString());
 

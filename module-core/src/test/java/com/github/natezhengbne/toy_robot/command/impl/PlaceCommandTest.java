@@ -5,6 +5,7 @@ import com.github.natezhengbne.toy_robot.command.ICommand;
 import com.github.natezhengbne.toy_robot.constant.CommandType;
 import com.github.natezhengbne.toy_robot.constant.DirectionType;
 import com.github.natezhengbne.toy_robot.constant.ModeType;
+import com.github.natezhengbne.toy_robot.model.Command;
 import com.github.natezhengbne.toy_robot.model.Toy;
 import com.github.natezhengbne.toy_robot.service.TableService;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
+
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,7 +33,7 @@ class PlaceCommandTest extends BaseUnitTest {
     @DirtiesContext
     @Test
     void execute() {
-        Toy toy = iCommand.execute("0,0,NORTH");
+        Toy toy = iCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH")).build());
 
         assertEquals(DirectionType.NORTH, toy.getDirection());
         assertEquals(0, toy.getPosition().getHorizontal());
@@ -46,8 +49,8 @@ class PlaceCommandTest extends BaseUnitTest {
     @Test
     @DirtiesContext
     void samePosition() {
-        Toy toy1 = iCommand.execute("0,0,NORTH");
-        Toy toy2 = iCommand.execute("0,0,NORTH");
+        Toy toy1 = iCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH")).build());
+        Toy toy2 = iCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH")).build());
 
         assertNotNull(toy1);
         assertNull(toy2);

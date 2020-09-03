@@ -2,7 +2,6 @@ package com.github.natezhengbne.toy_robot.command.impl;
 
 import com.github.natezhengbne.toy_robot.command.AbstractCommand;
 import com.github.natezhengbne.toy_robot.constant.CommandType;
-import com.github.natezhengbne.toy_robot.constant.DirectionType;
 import com.github.natezhengbne.toy_robot.model.Command;
 import com.github.natezhengbne.toy_robot.model.Toy;
 import com.github.natezhengbne.toy_robot.service.TableService;
@@ -12,24 +11,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class RightCommand extends AbstractCommand {
+public class ExitCommand extends AbstractCommand {
     @Autowired
     private TableService tableService;
 
     @Override
     public CommandType getType() {
-        return CommandType.RIGHT;
+        return CommandType.EXIT;
     }
 
     @Override
     public Toy execute(Command cmd) {
-        Toy toy = tableService.getToyOnTable(cmd.getArgs().size()>0?cmd.getArgs().get(0):null);
-        if(toy==null){
-            log.error("toy is null");
-            return null;
-        }
-
-        return tableService.rotate(toy, DirectionType.valueOf(toy.getDirection().getRightValue()),
-                tableService.nextPosition(toy.getPosition(), DirectionType.valueOf(toy.getDirection().getRightValue())));
+        return null;
     }
 }

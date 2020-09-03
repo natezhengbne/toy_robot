@@ -12,24 +12,23 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class RightCommand extends AbstractCommand {
+public class ReportCommand extends AbstractCommand {
     @Autowired
     private TableService tableService;
 
     @Override
     public CommandType getType() {
-        return CommandType.RIGHT;
+        return CommandType.REPORT;
     }
 
     @Override
     public Toy execute(Command cmd) {
         Toy toy = tableService.getToyOnTable(cmd.getArgs().size()>0?cmd.getArgs().get(0):null);
         if(toy==null){
-            log.error("toy is null");
+            log.error("toy is null"); //todo
             return null;
         }
+        return toy;
 
-        return tableService.rotate(toy, DirectionType.valueOf(toy.getDirection().getRightValue()),
-                tableService.nextPosition(toy.getPosition(), DirectionType.valueOf(toy.getDirection().getRightValue())));
     }
 }

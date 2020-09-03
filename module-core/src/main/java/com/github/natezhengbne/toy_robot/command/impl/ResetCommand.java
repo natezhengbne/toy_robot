@@ -2,6 +2,7 @@ package com.github.natezhengbne.toy_robot.command.impl;
 
 import com.github.natezhengbne.toy_robot.command.AbstractCommand;
 import com.github.natezhengbne.toy_robot.constant.CommandType;
+import com.github.natezhengbne.toy_robot.model.Command;
 import com.github.natezhengbne.toy_robot.model.Toy;
 import com.github.natezhengbne.toy_robot.service.TableService;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ public class ResetCommand extends AbstractCommand {
     }
 
     @Override
-    public Toy execute(String parameter) {
+    public Toy execute(Command cmd) {
         tableService.reset();
         return null;
     }

@@ -4,6 +4,7 @@ import com.github.natezhengbne.toy_robot.BaseUnitTest;
 import com.github.natezhengbne.toy_robot.command.ICommand;
 import com.github.natezhengbne.toy_robot.constant.CommandType;
 import com.github.natezhengbne.toy_robot.constant.ModeType;
+import com.github.natezhengbne.toy_robot.model.Command;
 import com.github.natezhengbne.toy_robot.model.Toy;
 import com.github.natezhengbne.toy_robot.service.TableService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,40 +35,45 @@ class ModeCommandTest extends BaseUnitTest{
 
     @Test
     void singleTest() {
-        iCommand.execute(ModeType.SINGLE.toString());
+        iCommand.execute(Command.builder().args(Arrays.asList(ModeType.SINGLE.toString())).build());
 
         ICommand placeCommand = super.commandFactory.getCommand(CommandType.PLACE.toString());
-        Toy toy1 = placeCommand.execute("0,0,NORTH");
+        Toy toy1 = placeCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH")).build());
         assertNotNull(toy1);
-        Toy toy2 = placeCommand.execute("0,1,NORTH");
+        Toy toy2 = placeCommand.execute(Command.builder().args(Arrays.asList("0","1","NORTH")).build());
         assertNull(toy2);
     }
 
     @Test
     void multiEatTest() {
-        iCommand.execute(ModeType.MULTI_EAT.toString());
+        iCommand.execute(Command.builder().args(Arrays.asList(ModeType.MULTI_EAT.toString())).build());
 
         ICommand placeCommand = super.commandFactory.getCommand(CommandType.PLACE.toString());
-        Toy toy1 = placeCommand.execute("0,0,NORTH");
+        Toy toy1 = placeCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH","andy")).build());
         assertNotNull(toy1);
-        Toy toy2 = placeCommand.execute("0,1,NORTH");
+        Toy toy2 = placeCommand.execute(Command.builder().args(Arrays.asList("0","1","NORTH","ben")).build());
         assertNotNull(toy2);
 
-        assertEquals(2, tableService.getTable().getToys().keySet().size());
+        ICommand moveCommand = super.commandFactory.getCommand(CommandType.MOVE.toString());
+        moveCommand.execute(Command.builder().args(Arrays.asList("andy")).build());
+
+        assertEquals(1, tableService.getTable().getToys().keySet().size());
     }
 
     @Test
     void multiBounceTest() {
-        iCommand.execute(ModeType.MULTI_BOUNCE.toString());
+        iCommand.execute(Command.builder().args(Arrays.asList(ModeType.MULTI_BOUNCE.toString())).build());
 
         ICommand placeCommand = super.commandFactory.getCommand(CommandType.PLACE.toString());
-        Toy toy1 = placeCommand.execute("0,0,NORTH,andy");
+        Toy toy1 = placeCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH","andy")).build());
         assertNotNull(toy1);
-        Toy toy2 = placeCommand.execute("0,1,WEST,jack");
+        Toy toy2 = placeCommand.execute(Command.builder().args(Arrays.asList("0","1","WEST","jack")).build());
         assertNotNull(toy2);
+        Toy toy3 = placeCommand.execute(Command.builder().args(Arrays.asList("0","2","SOUTH","ben")).build());
+        assertNotNull(toy3);
 
         ICommand moveCommand = super.commandFactory.getCommand(CommandType.MOVE.toString());
-        Toy toy3 = moveCommand.execute("andy");
+        moveCommand.execute(Command.builder().args(Arrays.asList("andy")).build());
 
         Map<String,Toy> toys = tableService.getTable().getToys();
         log.info(tableService.getTable().toString());
@@ -79,6 +86,11 @@ class ModeCommandTest extends BaseUnitTest{
         assertEquals(0, toys.get("jack").getPosition().getHorizontal());
         assertEquals(2, toys.get("jack").getPosition().getVertical());
         assertEquals(-1, toys.get("jack").getNextPosition().getHorizontal());
-        assertEquals(3, toys.get("jack").getNextPosition().getVertical());
+        assertEquals(2, toys.get("jack").getNextPosition().getVertical());
+
+        assertEquals(0, toys.get("ben").getPosition().getHorizontal());
+        assertEquals(3, toys.get("ben").getPosition().getVertical());
+        assertEquals(0, toys.get("ben").getNextPosition().getHorizontal());
+        assertEquals(2, toys.get("ben").getNextPosition().getVertical());
     }
 }

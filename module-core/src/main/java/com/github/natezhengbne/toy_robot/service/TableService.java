@@ -5,6 +5,7 @@ import com.github.natezhengbne.toy_robot.constant.ModeType;
 import com.github.natezhengbne.toy_robot.model.Position;
 import com.github.natezhengbne.toy_robot.model.Table;
 import com.github.natezhengbne.toy_robot.model.Toy;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -65,8 +66,13 @@ public class TableService {
         if(toy!=null){
             return toy;
         }
-        Optional<String> toyName = table.getToys().keySet().stream().findFirst();
-        return toyName.map(s -> table.getToys().get(s)).orElse(null);
+        //default output
+        if(name==null || name.length() == 0){
+            Optional<String> toyName = table.getToys().keySet().stream().findFirst();
+            return toyName.map(s -> table.getToys().get(s)).orElse(null);
+        }
+
+        return null;
     }
 
     public Toy rotate(Toy toy, DirectionType nextDirectionType, Position nextPosition){
@@ -134,15 +140,13 @@ public class TableService {
                             if(onlySameDirection && toy.getDirection() != movingToy.getDirection()){
                                 return false;
                             }
+                            Position curr = Position.builder()
+                                    .horizontal(movingToy.getPosition().getHorizontal()+1)
+                                    .vertical(movingToy.getPosition().getVertical())
+                                    .build();
                             this.moveSave(movingToy,
-                                    Position.builder()
-                                            .horizontal(movingToy.getPosition().getHorizontal()+1)
-                                            .vertical(movingToy.getPosition().getVertical())
-                                            .build(),
-                                    Position.builder()
-                                        .horizontal(movingToy.getPosition().getHorizontal()+2)
-                                        .vertical(movingToy.getPosition().getVertical())
-                                    .build());
+                                    curr,
+                                    this.nextPosition(curr, movingToy.getDirection()));
                         }
                         return true;
                     }
@@ -157,15 +161,13 @@ public class TableService {
                             if(onlySameDirection && toy.getDirection() != movingToy.getDirection()){
                                 return false;
                             }
+                            Position curr = Position.builder()
+                                    .horizontal(movingToy.getPosition().getHorizontal()-1)
+                                    .vertical(movingToy.getPosition().getVertical())
+                                    .build();
                             this.moveSave(movingToy,
-                                    Position.builder()
-                                            .horizontal(movingToy.getPosition().getHorizontal()-1)
-                                            .vertical(movingToy.getPosition().getVertical())
-                                            .build(),
-                                    Position.builder()
-                                        .horizontal(movingToy.getPosition().getHorizontal()-2)
-                                        .vertical(movingToy.getPosition().getVertical())
-                                    .build());
+                                    curr,
+                                    this.nextPosition(curr, movingToy.getDirection()));
                         }
                         return true;
                     }
@@ -180,15 +182,17 @@ public class TableService {
                             if(onlySameDirection && toy.getDirection() != movingToy.getDirection()){
                                 return false;
                             }
+                            Position curr = Position.builder()
+                                    .horizontal(movingToy.getPosition().getHorizontal())
+                                    .vertical(movingToy.getPosition().getVertical()+1)
+                                    .build();
                             this.moveSave(movingToy,
-                                    Position.builder()
-                                            .horizontal(movingToy.getPosition().getHorizontal())
-                                            .vertical(movingToy.getPosition().getVertical()+1)
-                                            .build(),
-                                    Position.builder()
-                                        .horizontal(movingToy.getNextPosition().getHorizontal())
-                                        .vertical(movingToy.getPosition().getVertical()+2)
-                                    .build()
+                                    curr,
+                                    this.nextPosition(curr, movingToy.getDirection())
+//                                    Position.builder()
+//                                        .horizontal(movingToy.getNextPosition().getHorizontal())
+//                                        .vertical(movingToy.getPosition().getVertical()+2)
+//                                    .build()
                             );
                         }
                         return true;
@@ -204,17 +208,14 @@ public class TableService {
                             if(onlySameDirection && toy.getDirection() != movingToy.getDirection()){
                                 return false;
                             }
-                            movingToy.setPosition(movingToy.getNextPosition());
-                            movingToy.getNextPosition().setHorizontal(movingToy.getNextPosition().getHorizontal()+1);
+                            Position curr = Position.builder()
+                                    .horizontal(movingToy.getPosition().getHorizontal())
+                                    .vertical(movingToy.getPosition().getVertical()-1)
+                                    .build();
                             this.moveSave(movingToy,
-                                    Position.builder()
-                                            .horizontal(movingToy.getPosition().getHorizontal())
-                                            .vertical(movingToy.getPosition().getVertical()-1)
-                                            .build(),
-                                    Position.builder()
-                                        .horizontal(movingToy.getPosition().getHorizontal())
-                                        .vertical(movingToy.getPosition().getVertical()-2)
-                                    .build());
+                                    curr,
+                                    this.nextPosition(curr, movingToy.getDirection())
+                            ) ;
                         }
                         return true;
                     }
@@ -238,4 +239,27 @@ public class TableService {
         table.setModeType(modeType);
     }
 
+
+    public Position nextPosition(@NonNull Position current, @NonNull DirectionType directionType){
+        Position nextPosition = Position.builder().build();
+        switch (directionType){
+            case EAST:
+                nextPosition.setHorizontal(current.getHorizontal()+1);
+                nextPosition.setVertical(current.getVertical());
+                break;
+            case WEST:
+                nextPosition.setHorizontal(current.getHorizontal()-1);
+                nextPosition.setVertical(current.getVertical());
+                break;
+            case NORTH:
+                nextPosition.setVertical(current.getVertical()+1);
+                nextPosition.setHorizontal(current.getHorizontal());
+                break;
+            case SOUTH:
+                nextPosition.setVertical(current.getVertical()-1);
+                nextPosition.setHorizontal(current.getHorizontal());
+                break;
+        }
+        return nextPosition;
+    }
 }
