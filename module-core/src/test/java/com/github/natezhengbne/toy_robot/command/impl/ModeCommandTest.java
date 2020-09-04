@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
 class ModeCommandTest extends BaseUnitTest{
@@ -68,7 +69,8 @@ class ModeCommandTest extends BaseUnitTest{
 
     @Test
     void multiBounceTest() {
-        iCommand.execute(Command.builder().args(Arrays.asList(ModeType.MULTI_BOUNCE.toString())).build());
+        Response modeResponse = iCommand.execute(Command.builder().args(Arrays.asList(ModeType.MULTI_BOUNCE.toString())).build());
+        assertEquals(true, modeResponse.getSuccess());
 
         ICommand placeCommand = super.commandFactory.getCommand(CommandType.PLACE.toString());
         Response placeResponse1 = placeCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH","andy")).build());

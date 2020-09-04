@@ -26,7 +26,7 @@ public class ModeCommand extends AbstractCommand {
     @Override
     public Response execute(Command cmd) {
         if(cmd.getArgs()==null || cmd.getArgs().size()!=1 ||
-                ModeType.has(cmd.getArgs().get(0))){
+                !ModeType.has(cmd.getArgs().get(0))){
             return buildFailedResponse("MODE: "+ Arrays.toString(ModeType.values()));
         }
         tableService.mode(ModeType.valueOf(cmd.getArgs().get(0)));
