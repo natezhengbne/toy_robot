@@ -1,10 +1,12 @@
 package com.github.natezhengbne.toy_robot.command.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.natezhengbne.toy_robot.BaseUnitTest;
 import com.github.natezhengbne.toy_robot.command.ICommand;
 import com.github.natezhengbne.toy_robot.constant.CommandType;
 import com.github.natezhengbne.toy_robot.constant.ModeType;
 import com.github.natezhengbne.toy_robot.model.Command;
+import com.github.natezhengbne.toy_robot.model.Response;
 import com.github.natezhengbne.toy_robot.model.Toy;
 import com.github.natezhengbne.toy_robot.service.TableService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class ModeCommandTest extends BaseUnitTest{
     @Autowired
     private TableService tableService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
@@ -38,10 +42,12 @@ class ModeCommandTest extends BaseUnitTest{
         iCommand.execute(Command.builder().args(Arrays.asList(ModeType.SINGLE.toString())).build());
 
         ICommand placeCommand = super.commandFactory.getCommand(CommandType.PLACE.toString());
-        Toy toy1 = placeCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH")).build());
-        assertNotNull(toy1);
-        Toy toy2 = placeCommand.execute(Command.builder().args(Arrays.asList("0","1","NORTH")).build());
-        assertNull(toy2);
+
+        Response placeResponse = placeCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH")).build());
+        assertNotNull(placeResponse.getResult());
+
+        Response placeResponse2 = placeCommand.execute(Command.builder().args(Arrays.asList("0","1","NORTH")).build());
+        assertNull(placeResponse2.getResult());
     }
 
     @Test
@@ -49,10 +55,10 @@ class ModeCommandTest extends BaseUnitTest{
         iCommand.execute(Command.builder().args(Arrays.asList(ModeType.MULTI_EAT.toString())).build());
 
         ICommand placeCommand = super.commandFactory.getCommand(CommandType.PLACE.toString());
-        Toy toy1 = placeCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH","andy")).build());
-        assertNotNull(toy1);
-        Toy toy2 = placeCommand.execute(Command.builder().args(Arrays.asList("0","1","NORTH","ben")).build());
-        assertNotNull(toy2);
+        Response placeResponse = placeCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH","andy")).build());
+        assertNotNull(placeResponse.getResult());
+        Response placeResponse2 = placeCommand.execute(Command.builder().args(Arrays.asList("0","1","NORTH","ben")).build());
+        assertNotNull(placeResponse2.getResult());
 
         ICommand moveCommand = super.commandFactory.getCommand(CommandType.MOVE.toString());
         moveCommand.execute(Command.builder().args(Arrays.asList("andy")).build());
@@ -65,12 +71,9 @@ class ModeCommandTest extends BaseUnitTest{
         iCommand.execute(Command.builder().args(Arrays.asList(ModeType.MULTI_BOUNCE.toString())).build());
 
         ICommand placeCommand = super.commandFactory.getCommand(CommandType.PLACE.toString());
-        Toy toy1 = placeCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH","andy")).build());
-        assertNotNull(toy1);
-        Toy toy2 = placeCommand.execute(Command.builder().args(Arrays.asList("0","1","WEST","jack")).build());
-        assertNotNull(toy2);
-        Toy toy3 = placeCommand.execute(Command.builder().args(Arrays.asList("0","2","SOUTH","ben")).build());
-        assertNotNull(toy3);
+        Response placeResponse1 = placeCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH","andy")).build());
+        Response placeResponse2 = placeCommand.execute(Command.builder().args(Arrays.asList("0","1","WEST","jack")).build());
+        Response placeResponse3 = placeCommand.execute(Command.builder().args(Arrays.asList("0","2","SOUTH","ben")).build());
 
         ICommand moveCommand = super.commandFactory.getCommand(CommandType.MOVE.toString());
         moveCommand.execute(Command.builder().args(Arrays.asList("andy")).build());

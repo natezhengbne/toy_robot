@@ -15,6 +15,8 @@ class CommandFactoryTest extends BaseUnitTest {
 
     @Test
     void getCommand() {
-        assertNotNull(super.commandFactory.getCommand(CommandType.PLACE.toString()));
+        for(CommandType commandType: CommandType.values()){
+            assertNotNull(super.commandFactory.getCommand(commandType.toString()));
+        }
     }
 }

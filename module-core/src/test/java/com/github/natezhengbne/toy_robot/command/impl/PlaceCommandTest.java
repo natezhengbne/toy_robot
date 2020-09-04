@@ -1,11 +1,13 @@
 package com.github.natezhengbne.toy_robot.command.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.natezhengbne.toy_robot.BaseUnitTest;
 import com.github.natezhengbne.toy_robot.command.ICommand;
 import com.github.natezhengbne.toy_robot.constant.CommandType;
 import com.github.natezhengbne.toy_robot.constant.DirectionType;
 import com.github.natezhengbne.toy_robot.constant.ModeType;
 import com.github.natezhengbne.toy_robot.model.Command;
+import com.github.natezhengbne.toy_robot.model.Response;
 import com.github.natezhengbne.toy_robot.model.Toy;
 import com.github.natezhengbne.toy_robot.service.TableService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,8 @@ class PlaceCommandTest extends BaseUnitTest {
 
     @Autowired
     private TableService tableService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
@@ -33,7 +37,8 @@ class PlaceCommandTest extends BaseUnitTest {
     @DirtiesContext
     @Test
     void execute() {
-        Toy toy = iCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH")).build());
+        Response placeResponse = iCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH")).build());
+        Toy toy = objectMapper.convertValue(placeResponse.getResult(), Toy.class);
 
         assertEquals(DirectionType.NORTH, toy.getDirection());
         assertEquals(0, toy.getPosition().getHorizontal());
@@ -49,8 +54,12 @@ class PlaceCommandTest extends BaseUnitTest {
     @Test
     @DirtiesContext
     void samePosition() {
-        Toy toy1 = iCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH")).build());
-        Toy toy2 = iCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH")).build());
+        Response placeResponse1 = iCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH")).build());
+        Response placeResponse2 = iCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH")).build());
+
+        Toy toy1 = objectMapper.convertValue(placeResponse1.getResult(), Toy.class);
+        Toy toy2 = objectMapper.convertValue(placeResponse2.getResult(), Toy.class);
+
 
         assertNotNull(toy1);
         assertNull(toy2);

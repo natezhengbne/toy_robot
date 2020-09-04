@@ -1,10 +1,12 @@
 package com.github.natezhengbne.toy_robot.command.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.natezhengbne.toy_robot.BaseUnitTest;
 import com.github.natezhengbne.toy_robot.command.ICommand;
 import com.github.natezhengbne.toy_robot.constant.CommandType;
 import com.github.natezhengbne.toy_robot.constant.DirectionType;
 import com.github.natezhengbne.toy_robot.model.Command;
+import com.github.natezhengbne.toy_robot.model.Response;
 import com.github.natezhengbne.toy_robot.model.Toy;
 import com.github.natezhengbne.toy_robot.service.TableService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class MoveCommandTest extends BaseUnitTest {
     @Autowired
     private TableService tableService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
@@ -38,13 +42,11 @@ class MoveCommandTest extends BaseUnitTest {
     @Test
     void execute() {
         ICommand placeCommand = super.commandFactory.getCommand(CommandType.PLACE.toString());
-        Toy placedToy = placeCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH")).build());
+        Response placeResponse = placeCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH")).build());
 
-        assertNotNull(placedToy);
+        Response moveResponse = iCommand.execute(Command.builder().args(new ArrayList<>()).build());
 
-        Toy toy = iCommand.execute(Command.builder().args(new ArrayList<>()).build());
-
-        log.info(toy.toString());
+        Toy toy = objectMapper.convertValue(moveResponse.getResult(), Toy.class);
 
         assertEquals(DirectionType.NORTH, toy.getDirection());
         assertEquals(0, toy.getPosition().getHorizontal());
@@ -59,12 +61,14 @@ class MoveCommandTest extends BaseUnitTest {
     @Test
     void fallingTest(){
         ICommand placeCommand = super.commandFactory.getCommand(CommandType.PLACE.toString());
-        Toy placedToy = placeCommand.execute(Command.builder().args(Arrays.asList("3","3","NORTH")).build());
+        Response placeResponse = placeCommand.execute(Command.builder().args(Arrays.asList("3","3","NORTH")).build());
 
-        assertNotNull(placedToy);
+        assertNotNull(placeResponse.getResult());
 
         iCommand.execute(Command.builder().args(new ArrayList<>()).build());
-        Toy toy = iCommand.execute(Command.builder().args(new ArrayList<>()).build());
+        Response moveResponse = iCommand.execute(Command.builder().args(new ArrayList<>()).build());
+
+        Toy toy = objectMapper.convertValue(moveResponse.getResult(), Toy.class);
 
         log.info(toy.toString());
         assertEquals(DirectionType.NORTH, toy.getDirection());

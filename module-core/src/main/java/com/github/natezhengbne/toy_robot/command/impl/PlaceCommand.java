@@ -5,6 +5,7 @@ import com.github.natezhengbne.toy_robot.constant.CommandType;
 import com.github.natezhengbne.toy_robot.constant.DirectionType;
 import com.github.natezhengbne.toy_robot.model.Command;
 import com.github.natezhengbne.toy_robot.model.Position;
+import com.github.natezhengbne.toy_robot.model.Response;
 import com.github.natezhengbne.toy_robot.model.Toy;
 import com.github.natezhengbne.toy_robot.service.IdGenerator;
 import com.github.natezhengbne.toy_robot.service.TableService;
@@ -29,7 +30,7 @@ public class PlaceCommand extends AbstractCommand {
      * @return
      */
     @Override
-    public Toy execute(Command cmd) {
+    public Response execute(Command cmd) {
         Position position = Position.builder()
                 .horizontal(Integer.parseInt(cmd.getArgs().get(0)))
                 .vertical(Integer.parseInt(cmd.getArgs().get(1)))
@@ -46,16 +47,16 @@ public class PlaceCommand extends AbstractCommand {
 
         if(!tableService.isValidPosition(toy.getPosition())){
             log.info("Stay. toy: "+toy);
-            return null;
+            return buildSuccessResponse(null);
         }
 
         if(!tableService.place(toy)){
-            log.error("Toy place error, toy: "+toy);
-            return null;
+            log.error("You can't place there, toy: "+toy);
+            return buildFailedResponse("You can't place there");
         }
 
 
-        return toy;
+        return buildSuccessResponse(toy);
     }
 
 }

@@ -1,6 +1,5 @@
 package com.github.natezhengbne.toy_robot.command.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.natezhengbne.toy_robot.command.AbstractCommand;
 import com.github.natezhengbne.toy_robot.constant.CommandType;
 import com.github.natezhengbne.toy_robot.constant.DirectionType;
@@ -17,8 +16,6 @@ import org.springframework.stereotype.Service;
 public class LeftCommand extends AbstractCommand {
     @Autowired
     private TableService tableService;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Override
     public CommandType getType() {
@@ -29,19 +26,14 @@ public class LeftCommand extends AbstractCommand {
     public Response execute(Command cmd) {
         Toy toy = tableService.getToyOnTable(cmd.getArgs().size()>0?cmd.getArgs().get(0):null);
         if(toy==null){
-            log.error("toy is null"); //todo
-            return null;
+            log.error("Toy is null. Command: "+cmd.toString());
+            return buildFailedResponse("The toy doesn't exist");
         }
 
-        Response response = Response.builder()
-                .success(true)
-                .result(objectMapper.valueToTree(
-                        tableService.rotate(toy, DirectionType.valueOf(toy.getDirection().getLeftValue()),
-                                tableService.nextPosition(toy.getPosition(), DirectionType.valueOf(toy.getDirection().getLeftValue())))
-                ))
-                .build();
-
-        return response;
+        return buildSuccessResponse(
+                tableService.rotate(toy, DirectionType.valueOf(toy.getDirection().getLeftValue()),
+                        tableService.nextPosition(toy.getPosition(), DirectionType.valueOf(toy.getDirection().getLeftValue())))
+        );
 
     }
 }

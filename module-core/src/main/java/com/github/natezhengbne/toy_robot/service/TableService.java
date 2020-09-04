@@ -239,6 +239,10 @@ public class TableService {
         table.setModeType(modeType);
     }
 
+    public ModeType getMode(){
+        return table.getModeType();
+    }
+
 
     public Position nextPosition(@NonNull Position current, @NonNull DirectionType directionType){
         Position nextPosition = Position.builder().build();

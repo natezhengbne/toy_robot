@@ -1,9 +1,11 @@
 package com.github.natezhengbne.toy_robot.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.natezhengbne.toy_robot.command.CommandFactory;
 import com.github.natezhengbne.toy_robot.command.ICommand;
 import com.github.natezhengbne.toy_robot.constant.CommandType;
 import com.github.natezhengbne.toy_robot.model.Command;
+import com.github.natezhengbne.toy_robot.model.Response;
 import com.github.natezhengbne.toy_robot.model.Toy;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +20,12 @@ import java.util.Arrays;
 public class InputService {
     @Autowired
     private CommandFactory commandFactory;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public String handle(@NonNull String input){
         String[] commandArray = input.split(" ");
-        if(commandArray.length>2){
+        if(commandArray.length>2||commandArray.length==0){
             return this.unknownCommand();
         }
         ICommand iCommand = null;
@@ -39,10 +43,14 @@ public class InputService {
             cmd = Command.builder().commandType(iCommand.getType()).args(new ArrayList<>()).build();
         }
 
-        Toy toy = iCommand.execute(cmd);
+        Response response = iCommand.execute(cmd);
 
-        if(toy!=null && cmd.getCommandType() == CommandType.REPORT){
+        if(response.getSuccess() && cmd.getCommandType() == CommandType.REPORT){
+            Toy toy = objectMapper.convertValue(response.getResult(), Toy.class);
             return "Output: "+toy.getPosition().getHorizontal()+","+toy.getPosition().getVertical()+","+toy.getDirection().toString();
+        }
+        if(!response.getSuccess()){
+            return "Error: "+response.getError();
         }
         return null;
     }
