@@ -2,28 +2,30 @@
 
 ## Supported Commands
 
-Create an application that can read in commands of the following form:
+The robot can read in commands of the following form:
 
 ```plain
-PLACE
+PLACE X,Y,NORTH,[name]
 MOVE
 LEFT
 RIGHT
 REPORT
-RESET
-MODE
-EXIT
+RESET*
+MODE*
+EXIT*
 ```
 
-- PLACE will put the toy robot on the table in position X,Y and facing NORTH, SOUTH, EAST or WEST.
-- The origin (0,0) can be considered to be the SOUTH WEST most corner.
-- The first valid command to the robot is a PLACE command, after that, any sequence of commands may be issued, in any order, including another PLACE command. The application should discard all commands in the sequence until a valid PLACE command has been executed.
+- PLACE will put the toy robot on the table in position X,Y(The origin (0,0) can be considered to be the SOUTH WEST most corner.) and facing NORTH, SOUTH, EAST or WEST.
 - MOVE will move the toy robot one unit forward in the direction it is currently facing.
 - LEFT and RIGHT will rotate the robot 90 degrees in the specified direction without changing the position of the robot.
 - REPORT will announce the X,Y and orientation of the robot.
-- A robot that is not on the table can choose to ignore the MOVE, LEFT, RIGHT and REPORT commands.
-- Provide test data to exercise the application.
-
+- RESET will remove all toys on the table.
+- MODE 4 modes supported.
+    * SINGLE default
+    * MULTI_EAT Support multiple toys(less than the number of squares table) running on one table, it will "eat" previously placed toy in the same direction when it is moved.
+    * MULTI_BOUNCE If there is already a toy in the target position, the toy will be pushed forward together in same direction.
+    * MULTI_BOUNCE_WHEEL_WAY If there is already a toy in the target position with the same direction, the toy will be pushed forward together in same direction, otherwise, it will stands still. 
+- EXIT will shutdown the application.
 ## Getting started
 
 ### Dependencies

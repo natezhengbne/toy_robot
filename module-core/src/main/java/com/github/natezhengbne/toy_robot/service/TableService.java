@@ -43,7 +43,7 @@ public class TableService {
 
     public boolean place(Toy toy){
         if(table.getToys().keySet().size()!=0 && table.getModeType() == ModeType.SINGLE){
-            return false;
+            this.reset();
         }
         if(table.getToys().keySet().size()>=(table.getVerticalLength()*table.getHorizontalLength()) && table.getModeType() == ModeType.MULTI_EAT){
             return false;
