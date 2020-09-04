@@ -20,6 +20,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PlaceCommandTest extends BaseUnitTest {
 
@@ -60,9 +61,9 @@ class PlaceCommandTest extends BaseUnitTest {
         Toy toy1 = objectMapper.convertValue(placeResponse1.getResult(), Toy.class);
         Toy toy2 = objectMapper.convertValue(placeResponse2.getResult(), Toy.class);
 
+        assertEquals(false, tableService.getTable().getToys().containsKey(toy1.getName()));
+        assertEquals(true, tableService.getTable().getToys().containsKey(toy2.getName()));
 
-        assertNotNull(toy1);
-        assertNull(toy2);
 
     }
 }

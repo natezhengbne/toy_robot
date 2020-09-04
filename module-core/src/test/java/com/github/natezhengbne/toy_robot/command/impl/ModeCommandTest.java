@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,15 +41,20 @@ class ModeCommandTest extends BaseUnitTest{
 
     @Test
     void singleTest() {
-        iCommand.execute(Command.builder().args(Arrays.asList(ModeType.SINGLE.toString())).build());
+        iCommand.execute(Command.builder().args(Collections.singletonList(ModeType.SINGLE.toString())).build());
 
         ICommand placeCommand = super.commandFactory.getCommand(CommandType.PLACE.toString());
 
-        Response placeResponse = placeCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH")).build());
-        assertNotNull(placeResponse.getResult());
+        Response placeResponse1 = placeCommand.execute(Command.builder().args(Arrays.asList("0","0","NORTH")).build());
+        assertNotNull(placeResponse1.getResult());
+        Toy toy1 = objectMapper.convertValue(placeResponse1.getResult(), Toy.class);
 
         Response placeResponse2 = placeCommand.execute(Command.builder().args(Arrays.asList("0","1","NORTH")).build());
-        assertNull(placeResponse2.getResult());
+        assertNotNull(placeResponse2.getResult());
+        Toy toy2 = objectMapper.convertValue(placeResponse2.getResult(), Toy.class);
+
+        assertEquals(false, tableService.getTable().getToys().containsKey(toy1.getName()));
+        assertEquals(true, tableService.getTable().getToys().containsKey(toy2.getName()));
     }
 
     @Test
