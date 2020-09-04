@@ -22,14 +22,16 @@ public class CommandLineTaskExecutor implements CommandLineRunner {
     private InputService inputService;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         Scanner scanner = new Scanner(System.in);
         String input = null;
         boolean keepRunning = true;
+        System.out.println("--------  TOY ROBOT STARTED  ---------");
         while (scanner.hasNext() && keepRunning) {
             input = scanner.nextLine();
             if(input.equalsIgnoreCase("EXIT")){
                 keepRunning = false;
+                System.out.println("-----------------------------");
                 System.out.println("Bye.");
                 break;
             }

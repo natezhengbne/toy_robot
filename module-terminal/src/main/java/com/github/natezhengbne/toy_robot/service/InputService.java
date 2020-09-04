@@ -5,6 +5,7 @@ import com.github.natezhengbne.toy_robot.command.ICommand;
 import com.github.natezhengbne.toy_robot.constant.CommandType;
 import com.github.natezhengbne.toy_robot.model.Command;
 import com.github.natezhengbne.toy_robot.model.Toy;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,21 +19,19 @@ public class InputService {
     @Autowired
     private CommandFactory commandFactory;
 
-    public String handle(String input){
+    public String handle(@NonNull String input){
         String[] commandArray = input.split(" ");
         if(commandArray.length>2){
-            return null;
+            return this.unknownCommand();
         }
         ICommand iCommand = null;
         try{
             iCommand = commandFactory.getCommand(commandArray[0].toUpperCase());
         }catch (Exception e){
-            log.error(e.getMessage(), e);
-            return null;
+            log.error(input, e);
+            return this.unknownCommand();
         }
-        if(iCommand==null){
-           return null;
-        }
+
         Command cmd = null;
         if(commandArray.length==2){
             cmd = Command.builder().commandType(iCommand.getType()).args(Arrays.asList(commandArray[1].split(","))).build();
@@ -46,5 +45,9 @@ public class InputService {
             return "Output: "+toy.getPosition().getHorizontal()+","+toy.getPosition().getVertical()+","+toy.getDirection().toString();
         }
         return null;
+    }
+
+    public String unknownCommand(){
+        return "Command: "+Arrays.toString(CommandType.values());
     }
 }

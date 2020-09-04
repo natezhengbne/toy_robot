@@ -9,7 +9,8 @@ import java.util.List;
 
 @Data
 @Builder
-public class Command {
-    private CommandType commandType;
-    private List<String> args;
+public class Response {
+    private Boolean success;
+    private String error;
+    private JsonNode result;
 }
