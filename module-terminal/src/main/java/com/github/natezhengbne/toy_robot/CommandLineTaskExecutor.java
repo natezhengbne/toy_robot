@@ -49,6 +49,9 @@ public class CommandLineTaskExecutor implements CommandLineRunner {
                 String result = inputService.handle(input);
                 if(result!=null){
                     printStream.println(result);
+                }else{
+                    printStream.print("    -> Ok");
+                    printStream.println("");
                 }
             }
             if(scanner!=null){

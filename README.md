@@ -28,7 +28,30 @@ EXTEND*   EXTEND 10,10
     * MULTI_BOUNCE_WHEEL_WAY If there is already a toy in the target position with the same direction, the toy will be pushed forward together in same direction, otherwise, it will stands still. 
 - EXIT will shutdown the application.
 - EXTEND will extend the dimensions to X units to y units
+
+If some commands before a place or an invalid command, it should print the following output:
+```
+--------  TOY ROBOT STARTED  ---------
+ttt
+Commands: [PLACE, MOVE, LEFT, RIGHT, REPORT, EXIT, RESET, MODE, EXTEND]
+hello
+Commands: [PLACE, MOVE, LEFT, RIGHT, REPORT, EXIT, RESET, MODE, EXTEND]
+MOVE
+Place first
+```
 ## Getting started
+
+### Structure
+```
+toy_robot
+├── module-core       -- Service logic layer
+├──├──src implement the ICommand to support more commands
+├──├──test unit test for service here
+├
+├── module-terminal   -- Input & Output layer(easily for extend a different Input source, probably some chat bot)
+├──├──src encode and decode the input and output from console
+├──├──test integration test here 
+```
 
 ### Dependencies
 Java 1.8

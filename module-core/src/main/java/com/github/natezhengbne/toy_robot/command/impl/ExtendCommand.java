@@ -26,8 +26,13 @@ public class ExtendCommand extends AbstractCommand {
             return buildFailedResponse("Command: EXTEND Integer,Integer");
         }
         try{
-            tableService.getTable().setHorizontalLength(Integer.parseInt(cmd.getArgs().get(0)));
-            tableService.getTable().setVerticalLength(Integer.parseInt(cmd.getArgs().get(1)));
+            Integer h = Integer.parseInt(cmd.getArgs().get(0));
+            Integer v = Integer.parseInt(cmd.getArgs().get(1));
+            if(h <= 0 || v <= 0){
+                return buildFailedResponse("Command: EXTEND dimensions should > 0");
+            }
+            tableService.getTable().setHorizontalLength(h);
+            tableService.getTable().setVerticalLength(v);
         }catch (Exception e){
             return buildFailedResponse("Command: EXTEND Integer,Integer");
         }
