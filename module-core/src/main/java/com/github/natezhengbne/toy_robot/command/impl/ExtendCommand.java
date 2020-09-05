@@ -4,7 +4,6 @@ import com.github.natezhengbne.toy_robot.command.AbstractCommand;
 import com.github.natezhengbne.toy_robot.constant.CommandType;
 import com.github.natezhengbne.toy_robot.model.Command;
 import com.github.natezhengbne.toy_robot.model.Response;
-import com.github.natezhengbne.toy_robot.model.Toy;
 import com.github.natezhengbne.toy_robot.service.TableService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,31 +11,26 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class MoveCommand extends AbstractCommand {
+public class ExtendCommand extends AbstractCommand {
     @Autowired
     private TableService tableService;
 
     @Override
     public CommandType getType() {
-        return CommandType.MOVE;
+        return CommandType.EXTEND;
     }
 
     @Override
     public Response execute(Command cmd) {
-        Toy toy = tableService.getToyOnTable((cmd.getArgs()!=null && cmd.getArgs().size()>0)?cmd.getArgs().get(0):null);
-        if(toy==null){
-            log.error("toy is null");
-            return buildFailedResponse("Place first");
+        if(cmd.getArgs().size()!=2){
+            return buildFailedResponse("Command: EXTEND Integer,Integer");
         }
-
-
-        if(!tableService.isValidPosition(toy.getNextPosition())){
-            log.warn("Stay. toy: "+toy);
-            return buildSuccessResponse(toy);
+        try{
+            tableService.getTable().setHorizontalLength(Integer.parseInt(cmd.getArgs().get(0)));
+            tableService.getTable().setVerticalLength(Integer.parseInt(cmd.getArgs().get(1)));
+        }catch (Exception e){
+            return buildFailedResponse("Command: EXTEND Integer,Integer");
         }
-
-        tableService.move(toy, tableService.nextPosition(toy.getNextPosition(), toy.getDirection()));
-
-        return buildSuccessResponse(toy);
+        return Response.builder().success(true).build();
     }
 }

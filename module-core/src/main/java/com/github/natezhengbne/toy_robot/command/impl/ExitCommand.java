@@ -18,6 +18,6 @@ public class ExitCommand extends AbstractCommand {
 
     @Override
     public Response execute(Command cmd) {
-        return null;
+        return Response.builder().success(true).build();
     }
 }

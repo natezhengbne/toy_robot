@@ -5,14 +5,15 @@
 The robot can read in commands of the following form:
 
 ```plain
-PLACE X,Y,NORTH,[name]
-MOVE
-LEFT
-RIGHT
-REPORT
-RESET*
-MODE*
-EXIT*
+PLACE     PLACE 0,0,NORTH,jack
+MOVE      MOVE jack
+LEFT      LEFT jack
+RIGHT     RIGHT jack
+REPORT    REPORT jack
+RESET*    RESET
+MODE*     MODE SINGLE
+EXIT*     EXIT
+EXTEND    EXTEND 10,10
 ```
 
 - PLACE will put the toy robot on the table in position X,Y(The origin (0,0) can be considered to be the SOUTH WEST most corner.) and facing NORTH, SOUTH, EAST or WEST.
@@ -26,6 +27,7 @@ EXIT*
     * MULTI_BOUNCE If there is already a toy in the target position, the toy will be pushed forward together in same direction.
     * MULTI_BOUNCE_WHEEL_WAY If there is already a toy in the target position with the same direction, the toy will be pushed forward together in same direction, otherwise, it will stands still. 
 - EXIT will shutdown the application.
+- EXTEND will extend the dimensions to X units to y units
 ## Getting started
 
 ### Dependencies

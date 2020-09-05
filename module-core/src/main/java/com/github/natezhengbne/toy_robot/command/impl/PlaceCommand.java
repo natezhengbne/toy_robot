@@ -31,10 +31,20 @@ public class PlaceCommand extends AbstractCommand {
      */
     @Override
     public Response execute(Command cmd) {
-        Position position = Position.builder()
-                .horizontal(Integer.parseInt(cmd.getArgs().get(0)))
-                .vertical(Integer.parseInt(cmd.getArgs().get(1)))
-                .build();
+        if(cmd.getArgs()==null || cmd.getArgs().size()<3){
+            return buildFailedResponse("Command: PLACE X,Y,F,(name)");
+        }
+
+        Position position = null;
+        try {
+            position = Position.builder()
+                    .horizontal(Integer.parseInt(cmd.getArgs().get(0)))
+                    .vertical(Integer.parseInt(cmd.getArgs().get(1)))
+                    .build();
+        }catch (Exception e){
+            log.error(cmd.toString(), e);
+            return buildFailedResponse("Command: PLACE number,number,direction,(name)");
+        }
         DirectionType direction = DirectionType.valueOf(cmd.getArgs().get(2));
         String toyName = cmd.getArgs().size()>3?cmd.getArgs().get(3):IdGenerator.getId();
 

@@ -27,13 +27,12 @@ public class ReportCommand extends AbstractCommand {
 
     @Override
     public Response execute(Command cmd) {
-        Toy toy = tableService.getToyOnTable(cmd.getArgs().size()>0?cmd.getArgs().get(0):null);
+        Toy toy = tableService.getToyOnTable((cmd.getArgs()!=null && cmd.getArgs().size()>0)?cmd.getArgs().get(0):null);
         if(toy==null){
             log.error("toy is null");
             return buildFailedResponse("Place first");
 
         }
         return buildSuccessResponse(toy);
-
     }
 }

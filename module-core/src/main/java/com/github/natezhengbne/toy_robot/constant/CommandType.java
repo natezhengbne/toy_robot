@@ -10,5 +10,6 @@ public enum CommandType {
 
     RESET,
     MODE,
+    EXTEND,
 
 }
