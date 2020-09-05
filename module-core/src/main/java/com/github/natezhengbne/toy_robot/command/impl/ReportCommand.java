@@ -29,7 +29,7 @@ public class ReportCommand extends AbstractCommand {
     public Response execute(Command cmd) {
         Toy toy = tableService.getToyOnTable((cmd.getArgs()!=null && cmd.getArgs().size()>0)?cmd.getArgs().get(0):null);
         if(toy==null){
-            log.error("toy is null");
+            log.error("toy is null. "+cmd.toString());
             return buildFailedResponse("Place first");
 
         }

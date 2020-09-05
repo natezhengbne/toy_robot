@@ -2,7 +2,7 @@
 
 ## Supported Commands
 
-The robot can read in commands of the following form:
+The robot can read in commands(new features with *) of the following form:
 
 ```plain
 PLACE     PLACE 0,0,NORTH,jack
@@ -13,15 +13,15 @@ REPORT    REPORT jack
 RESET*    RESET
 MODE*     MODE SINGLE
 EXIT*     EXIT
-EXTEND    EXTEND 10,10
+EXTEND*   EXTEND 10,10
 ```
 
 - PLACE will put the toy robot on the table in position X,Y(The origin (0,0) can be considered to be the SOUTH WEST most corner.) and facing NORTH, SOUTH, EAST or WEST.
 - MOVE will move the toy robot one unit forward in the direction it is currently facing.
 - LEFT and RIGHT will rotate the robot 90 degrees in the specified direction without changing the position of the robot.
 - REPORT will announce the X,Y and orientation of the robot.
-- RESET will remove all toys on the table.
-- MODE 4 modes supported.
+- RESET will remove all toys on the table. 
+- MODE 4 modes already supported. After opening the MULTI mode, you can customize the toy name to send the command to the specific toy. 
     * SINGLE default
     * MULTI_EAT Support multiple toys(less than the number of squares table) running on one table, it will "eat" previously placed toy in the same direction when it is moved.
     * MULTI_BOUNCE If there is already a toy in the target position, the toy will be pushed forward together in same direction.
@@ -48,5 +48,20 @@ Checkout the source code and run the following command in the /toy_robot directo
 java -jar ./module-terminal/target/terminal.jar -Dlog.path=YOUR_LOG_PATH
 ```
 
-
-
+### Test
+Running the test case 
+```
+./mvnw test
+```
+or with external test files
+```
+./mvnw test -Dtest.folder=YOUR_LOCAL_TEST_DIRECTORY
+```
+example: touch a new file name as robot_test.txt in /home/robot_test
+```
+PLACE 0,0,NORTH
+LEFT
+REPORT
+Output: 0,0,WEST
+```
+The unit test will compare the announced result of REPORT command with the content starts with "Output:" 
