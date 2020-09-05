@@ -1,18 +1,17 @@
 package com.github.natezhengbne.toy_robot;
 
 import com.github.natezhengbne.toy_robot.service.InputService;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.Scanner;
-import java.util.concurrent.CompletableFuture;
 
 @Order(1)
 @Component
@@ -21,26 +20,42 @@ public class CommandLineTaskExecutor implements CommandLineRunner {
     @Autowired
     private InputService inputService;
 
-    @Override
-    public void run(String... args) {
-        Scanner scanner = new Scanner(System.in);
-        String input = null;
-        boolean keepRunning = true;
-        System.out.println("--------  TOY ROBOT STARTED  ---------");
-        while (scanner.hasNext() && keepRunning) {
-            input = scanner.nextLine();
-            if(input.equalsIgnoreCase("EXIT")){
-                keepRunning = false;
-                System.out.println("-----------------------------");
-                System.out.println("Bye.");
-                break;
-            }
-            String result = inputService.handle(input);
-            if(result!=null){
-                System.out.println(result);
-            }
+    @Setter
+    private InputStream inputStream;
+    @Setter
+    private PrintStream printStream;
 
+    @Override
+    public void run(String... args) throws InterruptedException {
+        Scanner scanner = new Scanner(inputStream==null?System.in:inputStream);
+        if(printStream==null){
+            printStream = System.out;
         }
+        printStream.println("--------  TOY ROBOT STARTED  ---------");
+        readFromConsole(scanner);
+    }
+
+    public void readFromConsole(Scanner scanner) throws InterruptedException {
+
+        Thread rC = new Thread(() -> {
+            while (scanner.hasNext()) {
+                String input = scanner.nextLine();
+                if(input.equalsIgnoreCase("EXIT")){
+                    scanner.close();
+                    printStream.println("-----------------------------");
+                    printStream.println("Bye.");
+                    break;
+                }
+                String result = inputService.handle(input);
+                if(result!=null){
+                    printStream.println(result);
+                }
+            }
+            if(scanner!=null){
+                scanner.close();
+            }
+        });
+        rC.start();
     }
 
 }

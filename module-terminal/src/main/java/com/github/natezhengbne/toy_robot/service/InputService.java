@@ -50,12 +50,12 @@ public class InputService {
             return "Output: "+toy.getPosition().getHorizontal()+","+toy.getPosition().getVertical()+","+toy.getDirection().toString();
         }
         if(!response.getSuccess()){
-            return "Error: "+response.getError();
+            return response.getError();
         }
         return null;
     }
 
     public String unknownCommand(){
-        return "Command: "+Arrays.toString(CommandType.values());
+        return "Commands: "+Arrays.toString(CommandType.values());
     }
 }
