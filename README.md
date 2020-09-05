@@ -45,12 +45,12 @@ Place first
 ```
 toy_robot
 ├── module-core       -- Service logic layer
-├──├──src implement the ICommand to support more commands
-├──├──test unit test for service here
+├──├──src             -- Implement the ICommand to support more commands
+├──├──test            -- Unit test for service here
 ├
 ├── module-terminal   -- Input & Output layer(easily for extend a different Input source, probably some chat bot)
-├──├──src encode and decode the input and output from console
-├──├──test integration test here 
+├──├──src             -- Encode and decode the input and output from console
+├──├──test            -- Integration test here 
 ```
 
 ### Dependencies
