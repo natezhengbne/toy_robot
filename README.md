@@ -71,7 +71,7 @@ Checkout the source code and run the following command in the /toy_robot directo
 java -jar ./module-terminal/target/terminal.jar -Dlog.path=YOUR_LOG_PATH
 ```
 
-### Usage with Docker
+### Docker
 
 ```
 cd ./module-terminal
