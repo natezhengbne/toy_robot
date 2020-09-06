@@ -40,6 +40,9 @@ public class CommandLineTaskExecutor implements CommandLineRunner {
         Thread rC = new Thread(() -> {
             while (scanner.hasNext()) {
                 String input = scanner.nextLine();
+                if(input==null || input.equalsIgnoreCase("")){
+                    continue;
+                }
                 if(input.equalsIgnoreCase("EXIT")){
                     scanner.close();
                     printStream.println("-----------------------------");
