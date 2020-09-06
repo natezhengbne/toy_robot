@@ -56,24 +56,24 @@ toy_robot
 ### Dependencies
 Java 1.8
 - Check if JDK has been installed, or download from https://docs.aws.amazon.com/corretto/latest/corretto-8-ug/downloads-list.html
-```
+```shell script
 java -version
 ```
 
 ### Build
 Checkout the source code and run the following command in the /toy_robot directory:
-```
+```shell script
 ./mvnw clean package
 ```
 ### Usage
 
-```
+```shell script
 java -jar ./module-terminal/target/terminal.jar -Dlog.path=YOUR_LOG_PATH
 ```
 
 ### Docker
 
-```
+```shell script
 cd ./module-terminal
 docker build -t natezhengbne/toy_robot .
 docker run -i natezhengbne/toy_robot
@@ -81,11 +81,11 @@ docker run -i natezhengbne/toy_robot
 
 ### Test
 Running the test case 
-```
+```shell script
 ./mvnw test
 ```
 or with external test files
-```
+```shell script
 ./mvnw test -Dtest.folder=YOUR_LOCAL_TEST_DIRECTORY
 ```
 example: touch a new file name as robot_test.txt in /home/robot_test
